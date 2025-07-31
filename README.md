@@ -6,6 +6,7 @@ FortiManager is great (and recommended) for deploying and managing Fortinet SD-W
 
 This article is not a full explanation of Fortinet SD-WAN technology and features; please see the official documentation here.
 https://docs.fortinet.com/document/fortigate/7.4.6/administration-guide/19246/sd-wan
+https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture-for-mssps/445259/introduction
 
 ## Design Details
 
