@@ -134,9 +134,6 @@ config router bgp
         next
     end
     config network
-        edit 1
-            set prefix 172.16.1.1 255.255.255.255
-        next
         edit 2
             set prefix 10.4.0.0 255.255.255.0
         next
