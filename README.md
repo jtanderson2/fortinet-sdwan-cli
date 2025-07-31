@@ -13,7 +13,7 @@ https://docs.fortinet.com/document/fortigate/7.4.6/administration-guide/19246/sd
 * Dual internet underlay at all sites
 * DHCP on internet facing interfaces
 * IPSEC overlay with ADVPN
-* BGP dynamic routing in overlay, using 'BGP on loopback' design
+* BGP dynamic routing in overlay, using [BGP on loopback](https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture-for-mssps/53445/bgp-on-loopback)
 * BGP Route-Reflector on hub (not dynamic BGP approach)
 * ANY outbound internet access permitted from LANs at all sites
 * ANY-to-ANY access permitted between LANs at all sites
