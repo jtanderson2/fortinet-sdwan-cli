@@ -140,6 +140,9 @@ config router bgp
         edit 3
             set prefix 172.16.1.99 255.255.255.255
         next
+            edit 4
+            set prefix 172.16.0.0 255.240.0.0
+        next
     end
 ```
 
@@ -181,7 +184,12 @@ config router static
         set distance 1
         set sdwan-zone "underlay"
     next
+    edit 101
+        set dst 172.16.0.0 255.240.0.0
+        set blackhole enable
+    next    
 end
+
 ```
 
 Firewall Policy:
