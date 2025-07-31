@@ -15,17 +15,23 @@ https://docs.fortinet.com/document/fortigate/7.4.6/administration-guide/19246/sd
 * DHCP on internet facing interfaces
 * IPSEC Overlay with ADVPN
 * BGP dynamic routing in Overlay, using 'BGP on loopback' design
+* BGP Route-Reflector on hub (not dynamic BGP approach)
 * ANY outbound internet access permitted from LANs at all sites
 * ANY-to-ANY access permitted between LANs at all sites
+* Simple load-balancing and failover for internet and overlay traffic (add intelligent application routing rules at your leisure!)
+
+
+
+> NOTE: While the configurations here can be used as the basis for a real deployment, they should not be considered 'production ready'. For instance, there is no filtering on the BGP peers and the firewall policies are somewhat open ;)
 
 ### Diagrams
 
 ![](media/sdwan-cli.PNG)
 
 
-The following CLI configurations do not contain any base system or interface config, as that is very specific to my lab. Details of lab setup *coming soon*
-
 ## Configuration
+
+The following CLI configurations do not contain any base system or interface config, as that is very specific to my lab. Details of lab setup *coming soon*
 
 ### Hub (fgt101)
 
