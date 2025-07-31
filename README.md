@@ -337,6 +337,7 @@ config system sdwan
         edit "underlay"
         next
         edit "overlay"
+            set advpn-select enable
         next
     end
     config members
@@ -435,3 +436,6 @@ end
 
 ### Spoke2 (FGT102)
 Configuration hasn't been included here as identical to Spoke1 with the relevant interfaces and IPs changed.
+
+## Verfication
+tba
