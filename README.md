@@ -17,7 +17,9 @@ https://docs.fortinet.com/document/fortigate/7.4.6/administration-guide/19246/sd
 * ANY outbound internet access permitted from LANs at all sites
 * ANY-to-ANY access permitted between LANs at all sites
 
-### Underlay Diagram
+### Diagrams
+
+![](/media/sdwan-cli.png)
 
 
 
