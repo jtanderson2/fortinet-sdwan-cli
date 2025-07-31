@@ -9,10 +9,11 @@ https://docs.fortinet.com/document/fortigate/7.4.6/administration-guide/19246/sd
 
 ## Design Details
 
-* Single Hub, 2 Spokes
-* ADVPN
+* Single Hub, 2 Spokes running
+* 7.4 code
 * Dual internet underlay at all sites
 * DHCP on internet facing interfaces
+* IPSEC Overlay with ADVPN
 * BGP dynamic routing in Overlay, using 'BGP on loopback' design
 * ANY outbound internet access permitted from LANs at all sites
 * ANY-to-ANY access permitted between LANs at all sites
@@ -22,9 +23,214 @@ https://docs.fortinet.com/document/fortigate/7.4.6/administration-guide/19246/sd
 ![](media/sdwan-cli.PNG)
 
 
+The following CLI configurations do not contain any base system or interface config, as that is very specific to my lab. Details of lab setup *coming soon*
 
+## Configuration
 
+### Hub (fgt101)
 
+Loopback interfaces for BGP and SD-WAN health-check:
+```
+config system interface
+    edit "Lo-HC"
+        set vdom "root"
+        set ip 172.16.1.99 255.255.255.255
+        set allowaccess ping
+        set type loopback
+    next
+    edit "Lo"
+        set vdom "root"
+        set ip 172.16.1.1 255.255.255.255
+        set allowaccess ping
+        set type loopback
+```
+
+IPSEC Phase1:
+```
+config vpn ipsec phase1-interface
+    edit "VPN1"
+        set type dynamic
+        set interface "INET_1"
+        set ike-version 2
+        set peertype any
+        set net-device disable
+        set exchange-ip-addr4 172.16.1.1
+        set proposal aes256gcm-prfsha256 aes256-sha256
+        set add-route disable
+        set dpd on-idle
+        set auto-discovery-sender enable
+        set psksecret P455W0rd!
+        set dpd-retryinterval 60
+    next
+    edit "VPN2"
+        set type dynamic
+        set interface "INET_2"
+        set ike-version 2
+        set peertype any
+        set net-device disable
+        set exchange-ip-addr4 172.16.1.1
+        set proposal aes256gcm-prfsha256 aes256-sha256
+        set add-route disable
+        set dpd on-idle
+        set auto-discovery-sender enable
+        set psksecret P455W0rd!
+        set dpd-retryinterval 60
+    next
+end
+```
+
+IPSEC Phase2:
+```
+config vpn ipsec phase2-interface
+    edit "VPN1"
+        set phase1name "VPN1"
+        set proposal aes256gcm
+        set keepalive enable
+    next
+    edit "VPN2"
+        set phase1name "VPN2"
+        set proposal aes256gcm
+        set keepalive enable
+    next
+end
+```
+
+BGP:
+```
+config router bgp
+    set as 65000
+    set router-id 172.16.1.1
+    set keepalive-timer 15
+    set holdtime-timer 45
+    set ebgp-multipath enable
+    set ibgp-multipath enable
+    set additional-path enable
+    set recursive-next-hop enable
+    set recursive-inherit-priority enable
+    set graceful-restart enable
+    set additional-path-select 255
+    config neighbor-group
+        edit "ADVPN"
+            set advertisement-interval 1
+            set capability-graceful-restart enable
+            set next-hop-self enable
+            set soft-reconfiguration enable
+            set interface "Lo"
+            set remote-as 65000
+            set update-source "Lo"
+            set route-reflector-client enable
+        next
+    end
+    config neighbor-range
+        edit 1
+            set prefix 172.16.1.0 255.255.255.0
+            set neighbor-group "ADVPN"
+        next
+    end
+    config network
+        edit 2
+            set prefix 10.4.0.0 255.255.255.0
+        next
+        edit 3
+            set prefix 172.16.1.99 255.255.255.255
+        next
+    end
+```
+
+SD-WAN:
+```
+config system sdwan
+    set status enable
+    config zone
+        edit "virtual-wan-link"
+        next
+        edit "underlay"
+        next
+        edit "overlay"
+        next
+    end
+    config members
+        edit 1
+            set interface "INET_1"
+            set zone "underlay"
+        next
+        edit 2
+            set interface "INET_2"
+            set zone "underlay"
+        next
+        edit 3
+            set interface "VPN1"
+            set zone "overlay"
+            set priority 10
+        next
+        edit 4
+            set interface "VPN2"
+            set zone "overlay"
+            set priority 10
+        next
+    end
+
+config router static
+    edit 100
+        set distance 1
+        set sdwan-zone "underlay"
+    next
+end
+```
+
+Firewall Policy:
+```
+config firewall address
+    edit "CORP_LAN"
+        set subnet 10.0.0.0/8
+  next
+end
+
+config firewall policy
+    edit 1
+        set name "BGP"
+        set srcintf "overlay"
+        set dstintf "Lo"
+        set action accept
+        set srcaddr "all"
+        set dstaddr "all"
+        set schedule "always"
+        set service "PING" "BGP"
+    next
+    edit 4
+        set name "HUB_HC"
+        set srcintf "overlay"
+        set dstintf "Lo-HC"
+        set action accept
+        set srcaddr "all"
+        set dstaddr "all"
+        set schedule "always"
+        set service "ALL_ICMP"
+    next
+    edit 2
+        set name "CORPORATE"
+        set srcintf "LAN" "overlay"
+        set dstintf "LAN" "overlay"
+        set action accept
+        set srcaddr "CORP_LAN"
+        set dstaddr "CORP_LAN"
+        set schedule "always"
+        set service "ALL"
+        set logtraffic all
+    next
+    edit 3
+        set name "DIA"
+        set srcintf "LAN"
+        set dstintf "underlay"
+        set action accept
+        set srcaddr "all"
+        set dstaddr "all"
+        set schedule "always"
+        set service "ALL"
+        set nat enable
+    next
+end
+```
 
 
 
