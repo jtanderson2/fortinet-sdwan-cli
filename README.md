@@ -2,9 +2,9 @@
 
 ## Overview
 
-FortiManager is great (and recommended) for deploying and managing Fortinet SD-WAN, particularly for large environments. However, SD-WAN can be configured on the FortiGates via the GUI or CLI without any centralised management. This article describes configuring a small SD-WAN deployment using only the CLI.
+FortiManager is great (and recommended) for deploying and managing Fortinet SD-WAN. However, SD-WAN can be configured on the FortiGates via the GUI or CLI without any centralised management. This article describes configuring a small SD-WAN deployment using only the CLI. 
 
-This is not a full explanation of Fortinet SD-WAN technology and features; please see the official documentation here.
+This article is not a full explanation of Fortinet SD-WAN technology and features; please see the official documentation here.
 https://docs.fortinet.com/document/fortigate/7.4.6/administration-guide/19246/sd-wan
 
 ## Design Details
@@ -13,12 +13,12 @@ https://docs.fortinet.com/document/fortigate/7.4.6/administration-guide/19246/sd
 * 7.4 code
 * Dual internet underlay at all sites
 * DHCP on internet facing interfaces
-* IPSEC Overlay with ADVPN
-* BGP dynamic routing in Overlay, using 'BGP on loopback' design
+* IPSEC overlay with ADVPN
+* BGP dynamic routing in overlay, using 'BGP on loopback' design
 * BGP Route-Reflector on hub (not dynamic BGP approach)
 * ANY outbound internet access permitted from LANs at all sites
 * ANY-to-ANY access permitted between LANs at all sites
-* Simple load-balancing and failover for internet and overlay traffic (add intelligent application routing rules at your leisure!)
+* Simple load-balancing and failover for internet and overlay traffic (add application routing rules at your leisure!)
 
 
 
@@ -31,7 +31,7 @@ https://docs.fortinet.com/document/fortigate/7.4.6/administration-guide/19246/sd
 
 ## Configuration
 
-The following CLI configurations do not contain any base system or interface config, as that is very specific to my lab. Details of lab setup *coming soon*
+> NOTE: The following CLI configurations do not contain any base system or interface config, as that is very specific to my lab. Details of lab setup *coming soon*
 
 ### Hub (fgt101)
 
