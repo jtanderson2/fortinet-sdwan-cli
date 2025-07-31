@@ -448,5 +448,5 @@ end
 ### Spoke2 (FGT102)
 Configuration hasn't been included here as identical to Spoke1 with the relevant interfaces and IPs changed.
 
-## Verfication
+## Verification
 tba
