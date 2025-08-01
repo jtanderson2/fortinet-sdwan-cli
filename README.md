@@ -17,7 +17,7 @@ https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture
 * DHCP on internet facing interfaces
 * IPSEC overlay with ADVPN
 * BGP dynamic routing in overlay, using [BGP on loopback](https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture-for-mssps/53445/bgp-on-loopback)
-* BGP Route-Reflector on hub (not dynamic BGP approach)
+* BGP Route-Reflector on hub
 * ANY outbound internet access permitted from LANs at all sites
 * ANY-to-ANY access permitted between LANs at all sites
 * Simple load-balancing and failover for internet and overlay traffic (add application routing rules at your leisure!)
