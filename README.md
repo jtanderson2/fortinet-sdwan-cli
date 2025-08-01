@@ -450,7 +450,7 @@ Configuration hasn't been included here as identical to Spoke1 with the relevant
 
 ## Verification
 
-Pings checks:
+Ping checks:
 ```
 # spoke1 lan - hub lan
 jta@mint5:~$ ping 10.4.0.50
@@ -528,7 +528,7 @@ This used on both hubs and spokes to advertise their respective loopbacks over t
 Now lets take look at a spoke routing table:
 
 ```
-#FGT102 (poke1)
+#FGT102 (spoke1)
 get router info routing-table all
 <--- output omitted --->
 
@@ -554,14 +554,14 @@ C       192.168.0.0/24 is directly connected, internal
 
 We can see 2 equal cost paths to the Hub LAN range (again recursing via the loopback) and a route to the Spoke2 LAN via the shortcut tunnel **HUB1-VPN1_0**
 
-The spokes learn about the LAN prefixes of other spokes by virtue of the hub acting as a BGP Route-Reflector. Without this, the [iBGP split-horizon rule](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-BGP-route-reflector/ta-p/191503) would stop the LAN prefixes being propogated from spoke-to-hub-to-spoke. The other method of propogating prefixes between spokes is Dynamic BGP detailed [here].(https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture-for-mssps/637017/advpn-support-with-dynamic-bgp-rr-less).
+The spokes learn about the LAN prefixes of other spokes by virtue of the hub acting as a BGP Route-Reflector. Without this, the [iBGP split-horizon rule](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-BGP-route-reflector/ta-p/191503) would stop the LAN prefixes being propogated from spoke-to-hub-to-spoke. The other method of propogating prefixes between spokes is Dynamic BGP detailed [here](https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture-for-mssps/637017/advpn-support-with-dynamic-bgp-rr-less).
 
 The BGP route to **172.16.1.99/32** is the Hub Health-check loopback used in the overlay SD-WAN rules on the spokes.
 
 > NOTE: While we can see a number of ECMP routes in the outputs above, these are not used for path selection. That is the job of the SD-WAN rules, which are essentially intelligent policy-based routing rules. The job of the underlying BGP is to advertise all paths to all destinations (usually with little or no path manipulation) to give SD-WAN rules the ability to make routing decisions based on application, sla, identity etc. There must be a valid route to a given destination in the standard routing table for an SD-WAN Rule to take effect.
 
 ## Conclusion
-Manually configuring Fortinet SD-WAN via the CLI is great way to understand what is going under the hood. And CLI (or local GUI) configuration without centralised management may also be enough for small production environments. Of course the example in this article is very basic, with nothing in the way of intelligent application or identity based routing. However, this can be used as a basis for more advanced configurations with the SD-WAN Rules and Performance SLAs.
+Manually configuring Fortinet SD-WAN via the CLI is great way to understand what is going under the hood. And CLI (or GUI) configuration without centralised management may also be enough for small production environments. Of course the example in this article is very basic, with nothing in the way of intelligent application or identity based routing. However, this can be used as a basis for more advanced configurations with the SD-WAN Rules and Performance SLAs.
 
 
 
