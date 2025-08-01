@@ -16,7 +16,7 @@ https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture
 * Dual internet underlay at all sites
 * DHCP on internet facing interfaces
 * IPSEC overlay with ADVPN
-* BGP dynamic routing in overlay, using [BGP on loopback](https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture-for-mssps/53445/bgp-on-loopback)
+* BGP dynamic routing in overlay, using [BGP on loopback](https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture-for-mssps/53445/bgp-on-loopback) design
 * BGP Route-Reflector on hub
 * ANY outbound internet access permitted from LANs at all sites
 * ANY-to-ANY access permitted between LANs at all sites
@@ -146,7 +146,7 @@ config router bgp
     end
 ```
 
-SD-WAN:
+SD-WAN and Static Routes:
 ```
 config system sdwan
     set status enable
@@ -338,7 +338,7 @@ config router bgp
 end
 ```
 
-SD-WAN:
+SD-WAN and Static Routes:
 ```
 config system sdwan
     set status enable
@@ -519,11 +519,11 @@ S       172.16.1.12/32 [15/0] via VPN1 tunnel 172.16.1.12, [1/0]
 C       172.16.1.99/32 is directly connected, Lo-HC
 C       192.168.0.0/24 is directly connected, internal
 ```
-We can see 2 equal cost paths to each of the spokes LAN ranges recursing via the respective sites' loopback. Note the 'static' routes for each of those loopbacks which are required for the route recursion to work; they are not configured static routes in the normal sense, but are injected via this command in the ipsec phase1 settings: 
+We can see 2 equal cost paths to each of the spokes LAN ranges recursing via the respective sites' loopback. Note the 'static' routes for the loopbacks which are required for the route recursion. They are not configured static routes in the normal sense, but are injected via this command in the ipsec phase1 settings: 
 
 ```set exchange-ip-addr4 172.16.1.1x```
 
-This used on both hubs and spokes to advertise their respective loopbacks over the tunnels and is the key to how the 'BGP on Loopback' design works without the need for another dynamic routing protocol.
+This used on both hubs and spokes to advertise their respective loopbacks over the tunnels and is key to how the 'BGP on Loopback' design works without the need for another dynamic routing protocol.
 
 Now lets take look at a spoke routing table:
 
@@ -557,6 +557,11 @@ We can see 2 equal cost paths to the Hub LAN range (again recursing via the loop
 The spokes learn about the LAN prefixes of other spokes by virtue of the hub acting as a BGP Route-Reflector. Without this, the [iBGP split-horizon rule](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-BGP-route-reflector/ta-p/191503) would stop the LAN prefixes being propogated from spoke-to-hub-to-spoke. The other method of propogating prefixes between spokes is Dynamic BGP detailed [here].(https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture-for-mssps/637017/advpn-support-with-dynamic-bgp-rr-less).
 
 The BGP route to **172.16.1.99/32** is the Hub Health-check loopback used in the overlay SD-WAN rules on the spokes.
+
+> NOTE: While we can see a number of ECMP routes in the outputs above, these are not used for path selection. That is the job of the SD-WAN rules, which are essentially intelligent policy-based routing rules. The job of the underlying BGP is to advertise all paths to all destinations (usually with little or no path manipulation) to give SD-WAN rules the ability to make routing decisions based on application, sla, identity etc. There must be a valid route to a given destination in the standard routing table for an SD-WAN Rule to take effect.
+
+## Conclusion
+Manually configuring Fortinet SD-WAN via the CLI is great way to understand what is going under the hood. And CLI (or local GUI) configuration without centralised management may also be enough for small production environments. Of course the example in this article is very basic, with nothing in the way of intelligent application or identity based routing. However, this can be used as a basis for more advanced configurations with the SD-WAN Rules and Performance SLAs.
 
 
 
