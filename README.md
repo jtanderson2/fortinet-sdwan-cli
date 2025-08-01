@@ -449,4 +449,115 @@ end
 Configuration hasn't been included here as identical to Spoke1 with the relevant interfaces and IPs changed.
 
 ## Verification
-tba
+
+Pings checks:
+```
+# spoke1 lan - hub lan
+jta@mint5:~$ ping 10.4.0.50
+PING 10.4.0.50 (10.4.0.50) 56(84) bytes of data.
+64 bytes from 10.4.0.50: icmp_seq=1 ttl=62 time=1.13 ms
+64 bytes from 10.4.0.50: icmp_seq=2 ttl=62 time=0.806 ms
+64 bytes from 10.4.0.50: icmp_seq=3 ttl=62 time=0.770 ms
+
+# spoke1 lan - spoke2 lan
+jta@mint5:~$ ping 10.6.0.50
+PING 10.6.0.50 (10.6.0.50) 56(84) bytes of data.
+64 bytes from 10.6.0.50: icmp_seq=1 ttl=253 time=1.38 ms
+64 bytes from 10.6.0.50: icmp_seq=2 ttl=253 time=1.50 ms
+64 bytes from 10.6.0.50: icmp_seq=3 ttl=253 time=1.12 ms
+```
+
+Verify tunnels are up:
+```
+# FGT100 (hub)
+get vpn ipsec tunnel summary 
+'VPN1_0' 100.64.15.1:0  selectors(total,up): 1/1  rx(pkt,err): 83904/0  tx(pkt,err): 83904/0
+'VPN1_1' 100.64.13.1:0  selectors(total,up): 1/1  rx(pkt,err): 83961/0  tx(pkt,err): 83947/0
+'VPN2_0' 100.64.16.1:0  selectors(total,up): 1/1  rx(pkt,err): 71951/0  tx(pkt,err): 71951/0
+'VPN2_1' 100.64.14.1:0  selectors(total,up): 1/1  rx(pkt,err): 71950/0  tx(pkt,err): 71947/0
+
+# hub has 4 tunnels, 1 over each underlay to each spoke
+
+# FGT101 (spoke1)
+get vpn ipsec tunnel summary
+'HUB1-VPN1_0' 100.64.15.1:0  selectors(total,up): 1/1  rx(pkt,err): 181248/0  tx(pkt,err): 181341/2
+'HUB1-VPN1' 100.64.11.1:0  selectors(total,up): 1/1  rx(pkt,err): 84124/0  tx(pkt,err): 84136/1
+'HUB1-VPN2' 100.64.12.1:0  selectors(total,up): 1/1  rx(pkt,err): 72112/0  tx(pkt,err): 72115/6181
+
+# FGT102 (spoke2)
+get vpn ipsec tunnel summary
+'HUB1-VPN11_0' 100.64.13.1:0  selectors(total,up): 1/1  rx(pkt,err): 181616/0  tx(pkt,err): 181520/2
+'HUB1-VPN11' 100.64.11.1:0  selectors(total,up): 1/1  rx(pkt,err): 84229/0  tx(pkt,err): 84229/1
+'HUB1-VPN12' 100.64.12.1:0  selectors(total,up): 1/1  rx(pkt,err): 72252/0  tx(pkt,err): 72252/6182
+
+# spokes have 3 tunnels, 1 over each underlay to the hub, and an ADVPN shortcut tunnel directly between spokes - 'HUB1-VPN1_0'
+```
+
+At his point things are looking healthy, but lets take a look at the routing tables, first on the hub:
+
+```
+# FGT100 (hub)
+get router info routing-table all
+<--- output omitted --->
+
+Routing table for VRF=0
+S*      0.0.0.0/0 [1/0] via 100.64.11.254, INET_1, [1/0]
+                  [1/0] via 100.64.12.254, INET_2, [1/0]
+C       10.4.0.0/24 is directly connected, LAN
+B       10.5.0.0/24 [200/0] via 172.16.1.11 (recursive via VPN1 tunnel 172.16.1.11 [1]), 11:27:21
+                                            (recursive via VPN2 tunnel 10.0.0.17 [1]), 11:27:21, [1/0]
+B       10.6.0.0/24 [200/0] via 172.16.1.12 (recursive via VPN1 tunnel 172.16.1.12 [1]), 12:26:41
+                                            (recursive via VPN2 tunnel 10.0.0.16 [1]), 12:26:41, [1/0]
+C       100.64.11.0/24 is directly connected, INET_1
+C       100.64.12.0/24 is directly connected, INET_2
+S       172.16.0.0/12 [10/0] is a summary, Null, [1/0]
+C       172.16.1.1/32 is directly connected, Lo
+S       172.16.1.11/32 [15/0] via VPN1 tunnel 172.16.1.11, [1/0]
+                       [15/0] via VPN2 tunnel 10.0.0.17, [1/0]
+S       172.16.1.12/32 [15/0] via VPN1 tunnel 172.16.1.12, [1/0]
+                       [15/0] via VPN2 tunnel 10.0.0.16, [1/0]
+C       172.16.1.99/32 is directly connected, Lo-HC
+C       192.168.0.0/24 is directly connected, internal
+```
+We can see 2 equal cost paths to each of the spokes LAN ranges recursing via the respective sites' loopback. Note the 'static' routes for each of those loopbacks which are required for the route recursion to work; they are not configured static routes in the normal sense, but are injected via this command in the ipsec phase1 settings: 
+
+```set exchange-ip-addr4 172.16.1.1x```
+
+This used on both hubs and spokes to advertise their respective loopbacks over the tunnels and is the key to how the 'BGP on Loopback' design works without the need for another dynamic routing protocol.
+
+Now lets take look at a spoke routing table:
+
+```
+#FGT102 (poke1)
+get router info routing-table all
+<--- output omitted --->
+
+Routing table for VRF=0
+S*      0.0.0.0/0 [1/0] via 100.64.13.254, INET_1, [1/0]
+                  [1/0] via 100.64.14.254, INET_2, [1/0]
+B       10.4.0.0/24 [200/0] via 172.16.1.1 (recursive via HUB1-VPN1 tunnel 100.64.11.1), 12:51:31
+                                           (recursive via HUB1-VPN2 tunnel 100.64.12.1), 12:51:31, [1/0]
+C       10.5.0.0/24 is directly connected, LAN
+B       10.6.0.0/24 [200/0] via 172.16.1.12 (recursive via HUB1-VPN1_0 tunnel 100.64.15.1), 11:03:43, [1/0]
+C       100.64.13.0/24 is directly connected, INET_1
+C       100.64.14.0/24 is directly connected, INET_2
+B       172.16.0.0/12 [200/0] via 172.16.1.1 (recursive via HUB1-VPN1 tunnel 100.64.11.1), 11:04:51
+                                             (recursive via HUB1-VPN2 tunnel 100.64.12.1), 11:04:51, [1/0]
+S       172.16.1.1/32 [15/0] via HUB1-VPN1 tunnel 100.64.11.1, [1/0]
+                      [15/0] via HUB1-VPN2 tunnel 100.64.12.1, [1/0]
+C       172.16.1.11/32 is directly connected, Lo
+S       172.16.1.12/32 [15/0] via HUB1-VPN1_0 tunnel 100.64.15.1, [1/0]
+B       172.16.1.99/32 [200/0] via 172.16.1.1 (recursive via HUB1-VPN1 tunnel 100.64.11.1), 12:51:31
+                                              (recursive via HUB1-VPN2 tunnel 100.64.12.1), 12:51:31, [1/0]
+C       192.168.0.0/24 is directly connected, internal
+```
+
+We can see 2 equal cost paths to the Hub LAN range (again recursing via the loopback) and a route to the Spoke2 LAN via the shortcut tunnel **HUB1-VPN1_0**
+
+The spokes learn about the LAN prefixes of other spokes by virtue of the hub acting as a BGP Route-Reflector. Without this, the [iBGP split-horizon rule](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-BGP-route-reflector/ta-p/191503) would stop the LAN prefixes being propogated from spoke-to-hub-to-spoke. The other method of propogating prefixes between spokes is Dynamic BGP detailed [here].(https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture-for-mssps/637017/advpn-support-with-dynamic-bgp-rr-less).
+
+The BGP route to **172.16.1.99/32** is the Hub Health-check loopback used in the overlay SD-WAN rules on the spokes.
+
+
+
+
