@@ -28,7 +28,7 @@ https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture
 
 ### Diagrams
 
-![](media/sdwan-cli.PNG)
+![](media/sdwan-cli.png)
 
 
 ## Configuration
