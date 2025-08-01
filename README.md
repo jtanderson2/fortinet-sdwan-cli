@@ -564,7 +564,7 @@ The BGP route to **172.16.1.99/32** is the Hub Health-check loopback used in the
 Manually configuring Fortinet SD-WAN via the CLI is great way to understand what is going under the hood. And CLI (or GUI) configuration without centralised management may also be enough for small production environments. Of course the example in this article is very basic, with nothing in the way of intelligent application or identity based routing. However, this can be used as a basis for more advanced configurations with the SD-WAN Rules and Performance SLAs.
 
 ## Further Reading
-Check out this Fortinet repo for more advanced CLI and Jinja configurations, that align with MSSP design patterns and best practices:
+Check out this Fortinet repo for more advanced CLI and Jinja configurations that align with MSSP design patterns and best practices:
 https://github.com/fortinet-solutions-cse/sdwan-advpn-reference 
 
 
