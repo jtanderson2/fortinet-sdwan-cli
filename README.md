@@ -2,13 +2,11 @@
 
 ## Overview
 
-FortiManager is great (and recommended) for deploying and managing Fortinet SD-WAN. However, SD-WAN can be configured on the FortiGates via the GUI or CLI without any centralised management. This article describes configuring a small SD-WAN deployment using only the CLI. 
+While FortiManager is the preferred tool for managing Fortinet SD-WAN at scale, SD-WAN can be configured on the FortiGates via the GUI or CLI without any centralised management. This article describes configuring a small SD-WAN deployment using only the CLI. 
 
-This article is not a full explanation of Fortinet SD-WAN technology and features; please see the official documentation here.
+This article is not a full explanation of Fortinet SD-WAN technology and features; refer to the official documentation for further details:
 
-https://docs.fortinet.com/document/fortigate/7.4.6/administration-guide/19246/sd-wan
-
-https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture-for-mssps
+https://docs.fortinet.com/sdwan
 
 ## Design Details
 
@@ -37,7 +35,7 @@ https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture
 
 ### Hub (FGT100)
 
-Loopback interfaces for BGP and SD-WAN health-check:
+#### Loopback Interfaces:
 ```
 config system interface
     edit "Lo-HC"
@@ -51,7 +49,7 @@ config system interface
         set type loopback
 ```
 
-IPSEC Phase1:
+#### IPSEC Phase1:
 ```
 config vpn ipsec phase1-interface
     edit "VPN1"
@@ -85,7 +83,7 @@ config vpn ipsec phase1-interface
 end
 ```
 
-IPSEC Phase2:
+#### IPSEC Phase2:
 ```
 config vpn ipsec phase2-interface
     edit "VPN1"
@@ -101,7 +99,7 @@ config vpn ipsec phase2-interface
 end
 ```
 
-BGP:
+#### BGP:
 ```
 config router bgp
     set as 65000
@@ -146,7 +144,7 @@ config router bgp
     end
 ```
 
-SD-WAN and Static Routes:
+#### SD-WAN and Static Routes:
 ```
 config system sdwan
     set status enable
@@ -192,7 +190,7 @@ end
 
 ```
 
-Firewall Policy:
+#### Firewall Policy:
 ```
 config firewall address
     edit "CORP_LAN"
@@ -248,7 +246,7 @@ end
 
 ### Spoke1 (FGT102)
 
-Loopback interface for BGP
+#### Loopback Interface
 ```
 config system interface
     edit "Lo102"
@@ -291,7 +289,7 @@ config vpn ipsec phase1-interface
 end
 ```
 
-IPSEC Phase1:
+#### IPSEC Phase2:
 ```
 config vpn ipsec phase2-interface
     edit "HUB1-VPN1"
@@ -307,7 +305,7 @@ config vpn ipsec phase2-interface
 end
 ```
 
-BGP:
+#### BGP:
 ```
 config router bgp
     set as 65000
@@ -338,7 +336,7 @@ config router bgp
 end
 ```
 
-SD-WAN and Static Routes:
+##### SD-WAN and Static Routes:
 ```
 config system sdwan
     set status enable
@@ -401,7 +399,7 @@ config router static
 end
 ```
 
-Firewall Policy:
+##### Firewall Policy:
 ```
 config firewall address
     edit "CORP_LAN"
@@ -561,7 +559,7 @@ The BGP route to **172.16.1.99/32** is the Hub Health-check loopback used in the
 > NOTE: While we can see a number of ECMP routes in the outputs above, these are not used for path selection. That is the job of the SD-WAN rules, which are essentially intelligent policy-based routing rules. The job of the underlying BGP is to advertise all paths to all destinations (usually with little or no path manipulation) to give SD-WAN rules the ability to make routing decisions based on application, sla, identity etc. There must be a valid route to a given destination in the standard routing table for an SD-WAN Rule to take effect.
 
 ## Conclusion
-Manually configuring Fortinet SD-WAN via the CLI is great way to understand what is going under the hood. And CLI (or GUI) configuration without centralised management may also be enough for small production environments. Of course the example in this article is very basic, with nothing in the way of intelligent application or identity based routing. However, this can be used as a basis for more advanced configurations with the SD-WAN Rules and Performance SLAs.
+Manually configuring Fortinet SD-WAN via the CLI provides deep insight into the underlying mechanics, and may also be enough for small production environments without centralised management. Of course the example in this article is very basic, with nothing in the way of intelligent application or identity based routing. However, this can be used as a basis for more advanced configurations with the SD-WAN Rules and Performance SLAs.
 
 ## Further Reading
 Check out this Fortinet repo for more advanced CLI and Jinja configurations that align with MSSP design patterns and best practices:
