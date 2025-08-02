@@ -274,7 +274,7 @@ end
 
 ### Spoke1 (FGT102)
 
-#### Loopback Interface
+#### Loopback Interface:
 ```
 config system interface
     edit "Lo102"
@@ -285,7 +285,7 @@ config system interface
 end
 ```
 
-IPSEC Phase1:
+#### IPSEC Phase1:
 ```
 config vpn ipsec phase1-interface
     edit "HUB1-VPN1"
@@ -364,7 +364,7 @@ config router bgp
 end
 ```
 
-##### SD-WAN and Static Routes:
+#### SD-WAN and Static Routes:
 ```
 config system sdwan
     set status enable
@@ -427,7 +427,7 @@ config router static
 end
 ```
 
-##### Firewall Policy:
+#### Firewall Policy:
 ```
 config firewall address
     edit "CORP_LAN"
