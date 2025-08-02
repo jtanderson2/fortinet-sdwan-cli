@@ -13,9 +13,9 @@ https://docs.fortinet.com/sdwan
 * Single Hub, 2 Spokes (all on 7.4)
 * Dual internet underlay at all sites
 * DHCP on internet facing interfaces
-* IPSEC overlay with ADVPN
+* IPSEC overlay with [ADVPN](https://docs.fortinet.com/document/fortigate/7.4.8/administration-guide/637049/advpn-2-0-edge-discovery-and-path-management)
 * BGP dynamic routing in overlay, using [BGP on loopback](https://docs.fortinet.com/document/fortigate/7.4.0/sd-wan-sd-branch-architecture-for-mssps/53445/bgp-on-loopback) design
-* BGP Route-Reflector on hub
+* BGP [Route-Reflector](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-BGP-route-reflector/ta-p/191503) on hub
 * ANY outbound internet access permitted from LANs at all sites
 * ANY-to-ANY access permitted between LANs at all sites
 * Simple load-balancing and failover for internet and overlay traffic (add application routing rules at your leisure!)
