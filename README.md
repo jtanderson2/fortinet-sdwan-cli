@@ -584,7 +584,7 @@ The spokes learn about the LAN prefixes of other spokes by virtue of the hub act
 
 The BGP route to **172.16.1.99/32** is the Hub Health-check loopback used in the overlay SD-WAN rules on the spokes.
 
-> NOTE: While we can see a number of ECMP routes in the outputs above, these are not used for path selection. That is the job of the SD-WAN rules, which are essentially intelligent policy-based routing rules. The job of the underlying BGP is to advertise all paths to all destinations (usually with little or no path manipulation) to give SD-WAN rules the ability to make routing decisions based on application, sla, identity etc. There must be a valid route to a given destination in the standard routing table for an SD-WAN Rule to take effect.
+> NOTE: While we can see a number of ECMP routes in the outputs above, the actual path selection is down to the SD-WAN rules which are essentially intelligent policy-based routing rules. The job of the underlying BGP is to advertise all paths to all destinations (usually with little or no path manipulation) to give SD-WAN rules the ability to make routing decisions based on application, sla, identity etc. There must be a valid route to a given destination in the standard routing table for an SD-WAN Rule to take effect.
 
 ## Conclusion
 Manually configuring Fortinet SD-WAN via the CLI provides deep insight into the underlying mechanics, and may also be enough for small production environments without centralised management. Of course the example in this article is very basic, with nothing in the way of intelligent application or identity based routing. However, this can be used as a basis for more advanced configurations with the SD-WAN Rules and Performance SLAs.
@@ -597,5 +597,6 @@ https://github.com/fortinet-solutions-cse/sdwan-advpn-reference
 Troubleshooting VPN tunnels if not coming up:
 
 https://community.fortinet.com/t5/FortiGate/Troubleshooting-Tip-IPsec-VPN-tunnels/ta-p/195955
+
 
 
