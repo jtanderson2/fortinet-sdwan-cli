@@ -554,7 +554,7 @@ This is used on both hubs and spokes to advertise their respective loopbacks ove
 Now lets take look at a spoke routing table:
 
 ```
-#FGT102 (spoke1)
+#FGT101 (spoke1)
 get router info routing-table all
 <--- output omitted --->
 
