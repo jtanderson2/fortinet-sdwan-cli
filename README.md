@@ -493,7 +493,7 @@ get vpn ipsec tunnel summary
 # spokes have 3 tunnels, 1 over each underlay to the hub, and an ADVPN shortcut tunnel directly between spokes - 'HUB1-VPN1_0'
 ```
 
-At his point things are looking healthy, but lets take a look at the routing tables, first on the hub:
+At this point things are looking healthy, but lets take a look at the routing tables, first on the hub:
 
 ```
 # FGT100 (hub)
@@ -519,11 +519,11 @@ S       172.16.1.12/32 [15/0] via VPN1 tunnel 172.16.1.12, [1/0]
 C       172.16.1.99/32 is directly connected, Lo-HC
 C       192.168.0.0/24 is directly connected, internal
 ```
-We can see 2 equal cost paths to each of the spokes LAN ranges recursing via the respective sites' loopback. Note the 'static' routes for the loopbacks which are required for the route recursion. They are not configured static routes in the normal sense, but are injected via this command in the ipsec phase1 settings: 
+We can see 2 equal cost paths to each of the spokes LAN ranges recursing via the respective sites' loopback; note the 'static' routes for the loopbacks which are required for the route recursion to function. They are not configured static routes in the normal sense, but are injected via this command in the ipsec phase1 settings: 
 
 ```set exchange-ip-addr4 172.16.1.1x```
 
-This used on both hubs and spokes to advertise their respective loopbacks over the tunnels and is key to how the 'BGP on Loopback' design works without the need for another dynamic routing protocol.
+This is used on both hubs and spokes to advertise their respective loopbacks over the tunnels and is key to how a 'BGP on Loopback' design works without the need for another dynamic routing protocol.
 
 Now lets take look at a spoke routing table:
 
