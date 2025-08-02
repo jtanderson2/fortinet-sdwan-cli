@@ -591,9 +591,10 @@ Manually configuring Fortinet SD-WAN via the CLI provides deep insight into the 
 
 ## Further Reading
 Fortinet repo with more advanced CLI and Jinja templates that align with MSSP design patterns and best practices:
+
 https://github.com/fortinet-solutions-cse/sdwan-advpn-reference
 
-
 Troubleshooting VPN tunnels if not coming up:
+
 https://community.fortinet.com/t5/FortiGate/Troubleshooting-Tip-IPsec-VPN-tunnels/ta-p/195955
 
