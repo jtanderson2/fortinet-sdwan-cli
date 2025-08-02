@@ -59,7 +59,7 @@ https://docs.fortinet.com/sdwan
 
 ## Configuration
 
-> NOTE: The following CLI configurations do not contain any base system or interface config, as that is very specific to my lab. Details of lab setup *coming soon*
+> NOTE: The following CLI configurations do not contain any base system or interface config, as that is very specific to my lab. Details of lab setup [here](https://github.com/jtanderson2/fortinet-lab)
 
 ### Hub (FGT100)
 
@@ -597,4 +597,5 @@ https://github.com/fortinet-solutions-cse/sdwan-advpn-reference
 Troubleshooting VPN tunnels if not coming up:
 
 https://community.fortinet.com/t5/FortiGate/Troubleshooting-Tip-IPsec-VPN-tunnels/ta-p/195955
+
 
