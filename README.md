@@ -4,6 +4,7 @@
 
 - [Overview](#introduction)
 - [Design Details](#design-details)
+  - [Specification](#specification)
   - [Diagrams](#diagrams)
 - [Configuration](#configuration)
   - [Hub (FGT100)](#hub-fgt100)
@@ -35,6 +36,8 @@ https://docs.fortinet.com/sdwan
 
 ## Design Details
 
+### Specification
+
 * Single Hub, 2 Spokes (all on 7.4)
 * Dual internet underlay at all sites
 * DHCP on internet facing interfaces
@@ -47,7 +50,7 @@ https://docs.fortinet.com/sdwan
 
 
 
-> NOTE: While the configurations here can be used as the basis for a real deployment, they should not be considered 'production ready'. For instance, there is no filtering on the BGP peers and the firewall policies are somewhat open ;)
+> NOTE: While the configurations provided in this article can be used as the basis for a real deployment, they should not be considered 'production ready'. For instance, there is no filtering on the BGP peers and the firewall policies are somewhat open ;)
 
 ### Diagrams
 
