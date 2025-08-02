@@ -519,7 +519,7 @@ S       172.16.1.12/32 [15/0] via VPN1 tunnel 172.16.1.12, [1/0]
 C       172.16.1.99/32 is directly connected, Lo-HC
 C       192.168.0.0/24 is directly connected, internal
 ```
-We can see 2 equal cost paths to each of the spokes LAN ranges recursing via the respective sites' loopback; note the 'static' routes for the loopbacks which are required for the route recursion to function. They are not configured static routes in the normal sense, but are injected via this command in the ipsec phase1 settings: 
+We can see 2 equal cost paths to each of the spokes' LAN ranges recursing via the respective sites' loopback; note the 'static' routes for the loopbacks which are required for the route recursion to function. They are not configured static routes in the normal sense, but are injected via this command in the ipsec phase1 settings: 
 
 ```set exchange-ip-addr4 172.16.1.1x```
 
