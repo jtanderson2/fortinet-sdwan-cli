@@ -272,7 +272,7 @@ config firewall policy
 end
 ```
 
-### Spoke1 (FGT102)
+### Spoke1 (FGT101)
 
 #### Loopback Interface:
 ```
