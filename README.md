@@ -14,7 +14,7 @@
     - [BGP](#bgp)
     - [SD-WAN and Static Routes](#sd-wan-and-static-routes)
     - [Firewall Policy](#firewall-policy)
-  - [Spoke1 (FGT102)](#spoke1-fgt102)
+  - [Spoke1 (FGT101)](#spoke1-fgt101)
     - [Loopback Interface](#loopback-interface)
     - [IPSEC Phase1](#ipsec-phase1-1)
     - [IPSEC Phase2](#ipsec-phase2-1)
