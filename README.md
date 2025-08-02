@@ -1,6 +1,31 @@
 # Fortinet SD-WAN CLI
 
-## Overview
+## Contents
+
+- [Overview](#introduction)
+- [Design Details](#design-details)
+  - [Diagrams](#diagrams)
+- [Configuration](#configuration)
+  - [Hub (FGT100)](#hub-fgt100)
+    - [Loopback Interfaces](#loopback-interfaces)
+    - [IPSEC Phase1](#ipsec-phase1)
+    - [IPSEC Phase2](#ipsec-phase2)
+    - [BGP](#bgp)
+    - [SD-WAN and Static Routes](#sd-wan-and-static-routes)
+    - [Firewall Policy](#firewall-policy)
+  - [Spoke1 (FGT102)](#spoke1-fgt102)
+    - [Loopback Interface](#loopback-interface)
+    - [IPSEC Phase1](#ipsec-phase1-1)
+    - [IPSEC Phase2](#ipsec-phase2-1)
+    - [BGP](#bgp-1)
+    - [SD-WAN and Static Routes](#sd-wan-and-static-routes-1)
+    - [Firewall Policy](#firewall-policy-1)
+  - [Spoke2 (FGT102)](#spoke2-fgt102)
+- [Verification](#verification)
+- [Conclusion](#conclusion)
+- [Further Reading](#further-reading)
+
+## Introduction
 
 While FortiManager is the preferred tool for managing Fortinet SD-WAN at scale, SD-WAN can be configured on the FortiGates via the GUI or CLI without any centralised management. This article describes configuring a small SD-WAN deployment using only the CLI. 
 
